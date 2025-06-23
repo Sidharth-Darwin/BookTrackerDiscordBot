@@ -1,0 +1,7 @@
+.env
+*.pyc
+__pycache__/
+/delete_later
+/venv
+/data/*.xls
+/data/*.xlsx
