@@ -43,7 +43,7 @@
 | `/unshelf_book`        | Bring a shelved book back to reading            | Everyone  |
 | `/delete_book`         | Delete a book from your log                      | Everyone  |
 | `/download_log`        | Download your reading data as Excel             | Admins    |
-| `/sync_google_sheet`   | Sync Excel to Google Sheet (manual trigger)     | Admins    |
+| `/gsheet_sync`   | Sync Excel to Google Sheet (manual trigger)     | Admins    |
 
 ---
 
