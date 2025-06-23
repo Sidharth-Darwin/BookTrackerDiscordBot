@@ -14,7 +14,7 @@ GOOGLE_SHEET_NAME = os.getenv("GOOGLE_SHEET_NAME")
 GOOGLE_SHEET_WORKSHEET = os.getenv("GOOGLE_SHEET_WORKSHEET", "Sheet1")
 
 # ----------------- Constants ----------------
-EXCEL_FILE: str = "data/dummy_reading_data.xlsx"
+EXCEL_FILE: str = "data/reading_data.xlsx"
 GENRE_FILE: str = "data/genres.csv"
 MAX_FIELDS: int = 25  # Max fields per embed in progress command
 DATE_CUTOFF_DAYS: int = 45  # 45 days in progress command
