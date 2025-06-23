@@ -36,14 +36,14 @@ class AddBookModal(ui.Modal, title="📚 Add a new book"):
         placeholder="e.g. 120",
         default="0",
         required=True,
-        max_length=100,
+        max_length=10,
         row=3
     )
     totalpages = ui.TextInput(
         label="Total Pages",
         placeholder="e.g. 300",
         required=True,
-        max_length=100,
+        max_length=10,
         row=4
     )
 

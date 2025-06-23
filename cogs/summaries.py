@@ -3,7 +3,7 @@ import discord
 from datetime import datetime
 import pandas as pd
 
-from config import GUILD_ID, CHANNEL_ID, EXCEL_FILE
+from config import GUILD_ID, CHANNEL_ID, EXCEL_FILE, DEBUG
 from utils.excel import read_excel_async
 from utils.summaries_utils import get_week_bounds, get_user_mentions, get_all_reader_ids
 
@@ -18,7 +18,8 @@ class SummaryCog(commands.Cog):
     async def daily_summary_loop(self):
         await self.bot.wait_until_ready()
         if not CHANNEL_ID or not GUILD_ID:
-            print("⚠️ CHANNEL_ID or GUILD_ID not set.")
+            if DEBUG:
+                print("⚠️ CHANNEL_ID or GUILD_ID not set.")
             return
 
         try:
@@ -39,7 +40,8 @@ class SummaryCog(commands.Cog):
             if isinstance(channel, discord.TextChannel):
                 await channel.send(msg)
         except Exception as e:
-            print(f"⚠️ Error in daily summary task: {e}")
+            if DEBUG:
+                print(f"⚠️ Error in daily summary task: {e}")
 
     @tasks.loop(hours=24)
     async def weekly_summary_loop(self):
@@ -69,7 +71,8 @@ class SummaryCog(commands.Cog):
             if isinstance(channel, discord.TextChannel):
                 await channel.send(msg)
         except Exception as e:
-            print(f"⚠️ Error in weekly_summary_loop: {e}")
+            if DEBUG:
+                print(f"⚠️ Error in weekly_summary_loop: {e}")
 
     @tasks.loop(hours=24)
     async def weekly_reminder_loop(self):
@@ -103,7 +106,8 @@ class SummaryCog(commands.Cog):
                 if isinstance(channel, discord.TextChannel):
                     await channel.send(msg)
         except Exception as e:
-            print(f"⚠️ Error in weekly_reminder_loop: {e}")
+            if DEBUG:
+                print(f"⚠️ Error in weekly_reminder_loop: {e}")
 
 async def setup(bot):
     await bot.add_cog(SummaryCog(bot))

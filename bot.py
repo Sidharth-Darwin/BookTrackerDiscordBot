@@ -7,7 +7,7 @@ from config import TOKEN, GUILD_ID, INTENTS, DEBUG, LOG_CHANNEL_ID
 bot = commands.Bot(command_prefix="!", intents=INTENTS)
 tree = bot.tree
 
-log_channel = None  # Will hold the log channel object
+log_channel = None  # Will hold the log channel object``
 
 async def send_to_log_channel(messages: list[str]):
     global log_channel
@@ -18,7 +18,7 @@ async def send_to_log_channel(messages: list[str]):
 
     if log_channel and isinstance(log_channel, discord.TextChannel):
         content = "🛠️ **Startup Log:**\n" + "\n".join(messages)
-        print(content)  # Print to console for debugging
+        print(content)
         await log_channel.send(content)
     else:
         print("⚠️ Could not find log channel to send startup log.")
@@ -43,13 +43,25 @@ async def load_cogs() -> list[str]:
 
 @bot.event
 async def on_ready():
+    # Clear global commands (prevents legacy commands from sticking around)
+    tree.clear_commands(guild=None)
+
+    # Optionally: clear commands for this guild only if you're resetting all
+    # await tree.clear_commands(guild=discord.Object(id=GUILD_ID))
+
+    # Re-sync only the current guild's commands
     await tree.sync(guild=discord.Object(id=GUILD_ID))
+
+    synced_cmds = len(tree.get_commands(guild=discord.Object(id=GUILD_ID)))
     sync_msg = (
-        f"✅ Synced {len(tree.get_commands(guild=discord.Object(id=GUILD_ID)))} command(s) "
-        f"for guild `{GUILD_ID}`.\n✅ Logged in as {bot.user}."
+        f"✅ Cleared global commands.\n"
+        f"✅ Synced {synced_cmds} command(s) for guild `{GUILD_ID}`.\n"
+        f"✅ Logged in as {bot.user}."
     )
     startup_logs.append(sync_msg)
+
     await send_to_log_channel(startup_logs)
+
 
 async def main():
     global startup_logs

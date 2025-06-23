@@ -1,7 +1,7 @@
 from discord.ext import commands
 from discord import app_commands, Interaction
 import discord
-from config import GUILD_ID
+from config import GUILD_ID, DEBUG
 from utils.genres import GENRE_LIST
 
 class GenresCog(commands.Cog):
@@ -11,8 +11,6 @@ class GenresCog(commands.Cog):
     @app_commands.command(name="genres", description="View the list of available genres")
     @app_commands.guilds(discord.Object(id=GUILD_ID))
     async def list_genres(self, interaction: Interaction):
-        raise Exception("This command is temporarily disabled. Please use the `!genres` command instead.")
-        exit(0)
         try:
             await interaction.response.defer(ephemeral=True)
 
@@ -42,7 +40,8 @@ class GenresCog(commands.Cog):
             try:
                 await interaction.followup.send(f"⚠️ Error displaying genres: {e}", ephemeral=True)
             except Exception as e2:
-                print(f"⚠️ Failed to send error message: {e2}")
+                if DEBUG:
+                    print(f"⚠️ Failed to send error message: {e2}")
 
 async def setup(bot):
     await bot.add_cog(GenresCog(bot))

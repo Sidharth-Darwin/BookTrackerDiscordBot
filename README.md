@@ -1,22 +1,85 @@
 # 📚 BookTrackerBot – Your Reading Companion on Discord
 
-BookTrackerBot helps you stay on top of your reading goals, track your progress, and share your literary journey with others in your server.
+**BookTrackerBot** is a powerful and community-friendly Discord bot that helps individuals and groups log their reading progress, share what they’re reading, and stay consistent — all while keeping data safely backed up to Google Sheets!
 
-# 🔍 Features:
-- Add Books: Log books you're currently reading with details like title, author, total pages, and genre(s).
+---
 
-- Update Progress: Easily update your current page to track how far you've read.
+## 🚀 Features
 
-- Visual Progress Reports: Get detailed embeds showing your reading stats and timeline.
+### 📖 Reading Log
+- **Add Books**: Log books you’re currently reading with title, author, total pages, and one or more genres.
+- **Update Progress**: Use slash commands to update your current page with automatic time stamps.
+- **Shelf/Unshelf**: Mark books as finished (shelved) or bring them back for rereading (unshelved).
+- **Delete Books**: Remove books from your log if added by mistake.
 
-- Genre Validation: Ensures consistency by allowing only admin-approved genres.
+### 📊 Visual Reports
+- **Progress Embeds**: View detailed progress cards for each book.
+- **Genre Summary Charts** *(coming soon)*: Visualize your reading preferences over time.
 
-- Community Insight: View what others are reading and how far they've come.
+### 🔁 Weekly Automation
+- **Daily Summary**: Notifies the group about who updated their progress today.
+- **Weekly Summary**: Shares a recap of active readers every Sunday.
+- **Weekly Reminder**: Pings users who haven’t updated by the end of the week.
+- **Google Sheets Sync**: Automatically uploads the Excel data to a connected Google Sheet every weekend for backup.
 
-- Admin Tools: Weekly summaries and gentle reminders for readers who haven’t updated.
+### 🔐 Admin Features
+- **Admin-Only Commands**: Certain commands (like syncing data or managing genres) are restricted to admins.
+- **Locked Channels**: Sensitive commands are only permitted in a designated admin channel.
+- **Genre Whitelisting**: Only approved genres are allowed. Users can request new genres to the admins.
 
-- User-Friendly Commands: Slash commands make it easy for everyone to use.
+### 🧠 Smart Integration
+- **Excel & Google Sheets Backend**: All data is stored in an Excel file and automatically synced to Google Sheets.
+- **Service Account Auth**: Secure integration with Google APIs using a service account – no public link sharing needed.
 
-# 🎯 Why Use It?
-Whether you're reading alone or as part of a group, BookTrackerBot keeps your reading organized, holds you accountable, and builds a reading culture in your community. From private logs to server-wide progress summaries, it supports both individual and shared growth.
+---
 
+## 🛠️ Commands Overview
+
+| Command                | Description                                      | Access    |
+|------------------------|--------------------------------------------------|-----------|
+| `/add_book`            | Add a new book to your reading list             | Everyone  |
+| `/update_book`         | Update progress for a book                       | Everyone  |
+| `/shelf_book`          | Mark a book as completed                         | Everyone  |
+| `/unshelf_book`        | Bring a shelved book back to reading            | Everyone  |
+| `/delete_book`         | Delete a book from your log                      | Everyone  |
+| `/download_log`        | Download your reading data as Excel             | Admins    |
+| `/sync_google_sheet`   | Sync Excel to Google Sheet (manual trigger)     | Admins    |
+
+---
+
+## 📁 Data Structure
+
+- **Excel File**: Primary data store.
+- **Google Sheets**: Weekly backup target for cloud sync.
+- **Genres Sheet**: A separate sheet for managing allowed genres.
+
+---
+
+## 🔧 Setup
+
+1. **Clone the repository**
+2. **Configure `.env`**
+```
+DISCORD_BOT_TOKEN=your-token-here
+GUILD_ID=your-server-id
+LOG_CHANNEL_ID=your-admin-log-channel-id
+EXCEL_FILE=path/to/data.xlsx
+GOOGLE_SHEET_NAME=your-google-sheet-name
+GOOGLE_SHEET_WORKSHEET=Sheet1
+GOOGLE_SHEETS_CRED_PATH=path/to/service_account.json
+```
+Save the service account key as a .json file.
+3. **Share your Google Sheet** with the service account:
+```
+sheet-bot@your-project-id.iam.gserviceaccount.com
+```
+Give **Editor access**.
+
+4. **Install requirements**
+```bash
+pip install -r requirements.txt
+```
+5. Run the bot
+```python
+python bot.py
+```
