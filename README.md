@@ -66,12 +66,14 @@
 2. **Configure `.env`**
 ```
 DISCORD_BOT_TOKEN=your-token-here
-GUILD_ID=your-server-id
-LOG_CHANNEL_ID=your-admin-log-channel-id
+ALLOWED_GUILD_ID=your-server-id
+LOG_CHANNEL_ID=preferably-admin-group-where-status-is-shown-text-channel-id
+ALLOWED_TEXT_CHANNEL_ID=allowed-to-put-summary-and-remainders-text-channel-id
 EXCEL_FILE=path/to/data.xlsx
 GOOGLE_SHEET_NAME=your-google-sheet-name
 GOOGLE_SHEET_WORKSHEET=Sheet1
 GOOGLE_SHEETS_CRED_PATH=path/to/service_account.json
+DEBUG=False
 ```
 Save the service account key as a .json file.
 3. **Share your Google Sheet** with the service account:
