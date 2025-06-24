@@ -42,6 +42,11 @@
 | `/shelf_book`          | Mark a book as completed                         | Everyone  |
 | `/unshelf_book`        | Bring a shelved book back to reading            | Everyone  |
 | `/delete_book`         | Delete a book from your log                      | Everyone  |
+| `/genres`         | List out all the available genres                   | Everyone  |
+| `/help`         | Help message that explains all commands                | Everyone  |
+| `/progress`        | Displays last `DATE_CUTOFF_DAYS` days of self progress| Everyone    |
+| `/progress @user1@user2`        | Displays last `DATE_CUTOFF_DAYS` days of tagged people's progress| Everyone |
+| `/progress *`        | Displays last `DATE_CUTOFF_DAYS` days of everyone's progress| Admin |
 | `/download_log`        | Download your reading data as Excel             | Admins    |
 | `/gsheet_sync`   | Sync Excel to Google Sheet (manual trigger)     | Admins    |
 
