@@ -12,27 +12,23 @@ from utils.excel import read_excel_async
 class ProgressCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.tree = bot.tree
 
-        @self.tree.command(
-            name="progress",
-            description="View reading progress for tagged users, yourself, or all users (admin only)."
-        )
-        @app_commands.guilds(discord.Object(id=GUILD_ID))
-        @app_commands.describe(users="Users to view progress for (optional, mention users or use * for all)")
-        async def progress_command(interaction: Interaction, users: Optional[str] = None):
-            await self.handle_progress(interaction, users)
+    @app_commands.command(
+        name="progress",
+        description="View reading progress for tagged users, yourself, or all users (admin only)."
+    )
+    @app_commands.guilds(discord.Object(id=GUILD_ID))
+    @app_commands.describe(users="Users to view progress for (optional, mention users or use * for all)")
+    async def progress_command(self, interaction: Interaction, users: Optional[str] = None):
+        await self.handle_progress(interaction, users)
 
     async def handle_progress(self, interaction: Interaction, users: Optional[str]):
         def is_admin(user: discord.Member) -> bool:
             return user.guild_permissions.administrator
 
         member = interaction.user
-        if not isinstance(member, discord.Member):
-            if interaction.guild:
-                member = interaction.guild.get_member(interaction.user.id)
-            if member is None and interaction.guild:
-                member = await interaction.guild.fetch_member(interaction.user.id)
+        if not isinstance(member, discord.Member) and interaction.guild:
+            member = interaction.guild.get_member(interaction.user.id) or await interaction.guild.fetch_member(interaction.user.id)
 
         await interaction.response.defer(ephemeral=False)
 
