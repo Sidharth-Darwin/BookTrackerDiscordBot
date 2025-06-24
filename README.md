@@ -76,6 +76,7 @@ GOOGLE_SHEETS_CRED_PATH=path/to/service_account.json
 DEBUG=False
 ```
 Save the service account key as a .json file.
+
 3. **Share your Google Sheet** with the service account:
 ```
 sheet-bot@your-project-id.iam.gserviceaccount.com
