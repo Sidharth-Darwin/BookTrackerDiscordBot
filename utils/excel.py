@@ -14,7 +14,7 @@ async def read_excel_async(path=EXCEL_FILE, **kwargs):
             cols = [
                 "Date", "UserID", "UserName", "BookName", "Author",
                 "Genres", "LastPage", "TotalPages", "LastUpdated",
-                "Status", "Rating"
+                "Status"
             ]
             df_new = pd.DataFrame(columns=cols)
             df_new.to_excel(path, index=False, engine='openpyxl')

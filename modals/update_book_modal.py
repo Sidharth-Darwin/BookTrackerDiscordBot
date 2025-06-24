@@ -79,19 +79,32 @@ class UpdateBookModal(ui.Modal, title="✏️ Update book progress."):
                 ephemeral=True
             )
             return
+        
+        finished_reading: bool = int(self.lastpage.value.strip()) == int(self.totalpages.value.strip())
 
-        df.loc[match, ["BookName", "Author", "Genres", "LastPage", "TotalPages", "LastUpdated"]] = [
-            self.bookname.value.strip(),
-            self.author.value.strip(),
-            ", ".join([genre for genre in genre_values]),
-            last_page,
-            total_pages,
-            datetime.now()
-        ]
+        if finished_reading:
+            df.loc[match, ["BookName", "Author", "Genres", "LastPage", "TotalPages", "LastUpdated", "Status"]] = [
+                self.bookname.value.strip(),
+                self.author.value.strip(),
+                ", ".join([genre for genre in genre_values]),
+                last_page,
+                total_pages,
+                datetime.now(),
+                2
+            ]
+        else:
+            df.loc[match, ["BookName", "Author", "Genres", "LastPage", "TotalPages", "LastUpdated"]] = [
+                self.bookname.value.strip(),
+                self.author.value.strip(),
+                ", ".join([genre for genre in genre_values]),
+                last_page,
+                total_pages,
+                datetime.now()
+            ]
 
         await write_excel_async(df, EXCEL_FILE)
 
-        if int(self.lastpage.value.strip()) >= int(self.totalpages.value.strip()):
+        if finished_reading:
             msg = (
                 f"🏆 **{interaction.user.mention}**, you finished reading **{self.bookname.value.title()}**! 🎉\n"
                 "Amazing job! Time to pick your next adventure. 📚"

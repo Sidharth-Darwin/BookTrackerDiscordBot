@@ -17,6 +17,10 @@ class SummaryCog(commands.Cog):
     @tasks.loop(hours=24)
     async def daily_summary_loop(self):
         await self.bot.wait_until_ready()
+        now = datetime.now()
+        if not(now.hour == 23 and now.minute == 59):
+            return
+        
         if not CHANNEL_ID or not GUILD_ID:
             if DEBUG:
                 print("⚠️ CHANNEL_ID or GUILD_ID not set.")
@@ -47,7 +51,7 @@ class SummaryCog(commands.Cog):
     async def weekly_summary_loop(self):
         await self.bot.wait_until_ready()
         now = datetime.now()
-        if now.weekday() != 6 or now.hour != 12 or now.minute != 59:
+        if not(now.weekday() == 6 and now.hour == 23 and now.minute == 59):
             return
 
         try:
@@ -78,7 +82,7 @@ class SummaryCog(commands.Cog):
     async def weekly_reminder_loop(self):
         await self.bot.wait_until_ready()
         now = datetime.now()
-        if now.weekday() != 6 or now.hour != 18:
+        if not(now.weekday() == 6 and now.hour == 18):
             return
 
         try:

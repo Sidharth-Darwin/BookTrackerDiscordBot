@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 import re
 
-from config import GUILD_ID, EXCEL_FILE, DATE_CUTOFF_DAYS, MAX_FIELDS
+from config import GUILD_ID, EXCEL_FILE, DATE_CUTOFF_DAYS, MAX_FIELDS, STATUS_MAP
 from utils.excel import read_excel_async
 
 class ProgressCog(commands.Cog):
@@ -130,8 +130,13 @@ class ProgressCog(commands.Cog):
                 total_pages = row.get("TotalPages", "N/A")
                 genres = row.get("Genres", "N/A")
                 last_updated = row.get("LastUpdated", "N/A")
+                status_val = row.get("Status", "Unknown")
+                status = STATUS_MAP.get(status_val, status_val)
                 try:
-                    progress = f"{last_page}/{total_pages} pages ({(int(last_page) / int(total_pages) * 100):.2f}%)" if int(total_pages) > 0 else "N/A"
+                    last_page_int = int(last_page)
+                    total_pages_int = int(total_pages)
+                    percent = last_page_int * 100 / total_pages_int
+                    progress = f"{status} {last_page}/{total_pages} pages ({percent:.2f}%)"
                 except Exception:
                     progress = "N/A"
 

@@ -4,7 +4,7 @@ from discord import ui, Interaction
 from datetime import datetime
 import pandas as pd
 
-from utils.excel import read_excel_async, write_excel_async
+from utils.excel import read_excel_async, write_excel_async, filter_booknames_with_user_status
 from utils.genres import GENRE_LIST
 from config import EXCEL_FILE, GUILD_ID
 
@@ -53,6 +53,14 @@ class AddBookModal(ui.Modal, title="📚 Add a new book"):
         if not interaction.guild or interaction.guild.id != GUILD_ID:
             await interaction.followup.send("This is not the allowed server.", ephemeral=True)
             return
+        
+        user_books = await filter_booknames_with_user_status(str(interaction.user.id), 1)
+        if len(user_books) >= 25:
+            await interaction.followup.send(
+            "⚠️ You have reached the limit of 25 active books. Please shelve some books using `/shelf_book` before adding new ones.",
+            ephemeral=True
+            )
+            return
 
         df = await read_excel_async(EXCEL_FILE)
         df["UserID"] = df["UserID"].astype(str)
@@ -83,18 +91,35 @@ class AddBookModal(ui.Modal, title="📚 Add a new book"):
                 ephemeral=True
             )
             return
+        
+        finished_reading: bool = int(self.lastpage.value.strip()) == int(self.totalpages.value.strip())
 
-        new_entry = {
-            "Date": datetime.now(),
-            "UserID": str(interaction.user.id),
-            "UserName": interaction.user.name,
-            "BookName": self.bookname.value.strip().lower(),
-            "Author": self.author.value.strip().lower(),
-            "Genres": ", ".join(genre_values),
-            "LastPage": last_page,
-            "TotalPages": total_pages,
-            "LastUpdated": datetime.now()
-        }
+        if finished_reading:
+            new_entry = {
+                "Date": datetime.now(),
+                "UserID": str(interaction.user.id),
+                "UserName": interaction.user.name,
+                "BookName": self.bookname.value.strip().lower(),
+                "Author": self.author.value.strip().lower(),
+                "Genres": ", ".join(genre_values),
+                "LastPage": last_page,
+                "TotalPages": total_pages,
+                "LastUpdated": datetime.now(),
+                "Status": 2
+            }
+        else:
+            new_entry = {
+                "Date": datetime.now(),
+                "UserID": str(interaction.user.id),
+                "UserName": interaction.user.name,
+                "BookName": self.bookname.value.strip().lower(),
+                "Author": self.author.value.strip().lower(),
+                "Genres": ", ".join(genre_values),
+                "LastPage": last_page,
+                "TotalPages": total_pages,
+                "LastUpdated": datetime.now(),
+                "Status": 1
+            }
 
         match = (
             (df["UserID"] == new_entry["UserID"]) &
@@ -112,3 +137,9 @@ class AddBookModal(ui.Modal, title="📚 Add a new book"):
                 f"🎉 **{interaction.user.mention}** added **{self.bookname.value.title()}** by *{self.author.value.title()}*! Happy reading! 📚",
                 ephemeral=False
             )
+            if finished_reading:
+                await interaction.followup.send(
+                    f"🏆 **{interaction.user.mention}**, you finished reading **{self.bookname.value.title()}**! 🎉\n"
+                    "Amazing job! Time to pick your next adventure. 📚",
+                    ephemeral=False
+                )
