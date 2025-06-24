@@ -25,17 +25,26 @@ class ProgressCog(commands.Cog):
     async def handle_progress(self, interaction: Interaction, users: Optional[str]):
         def is_admin(user: discord.Member) -> bool:
             return user.guild_permissions.administrator
+        
+        invoker_user = interaction.user
+        if not isinstance(invoker_user, discord.Member) and interaction.guild:
+            invoker_user = interaction.guild.get_member(invoker_user.id) or await interaction.guild.fetch_member(invoker_user.id)
 
-        member = interaction.user
-        if not isinstance(member, discord.Member) and interaction.guild:
-            member = interaction.guild.get_member(interaction.user.id) or await interaction.guild.fetch_member(interaction.user.id)
+        if not users:
+            await interaction.response.defer(ephemeral=True)
+            embeds = await self.get_reading_progress([invoker_user.id])
+            for embed in embeds:
+                await interaction.followup.send(embed=embed, ephemeral=True)
+            return
+        
+        if users and users.strip() == "*":
+            if not (isinstance(invoker_user, discord.Member) and is_admin(invoker_user)):
+                await interaction.response.send_message("❌ Only administrators can use this command. `/progress *`.", ephemeral=True)
+                return
 
         await interaction.response.defer(ephemeral=False)
 
         if users and users.strip() == "*":
-            if not (isinstance(member, discord.Member) and is_admin(member)):
-                await interaction.followup.send("Only admins can view the progress of all users with `/progress *`.", ephemeral=True)
-                return
             try:
                 df = await read_excel_async(EXCEL_FILE)
                 user_ids = df["UserID"].dropna().unique().tolist()
@@ -48,7 +57,7 @@ class ProgressCog(commands.Cog):
                 await interaction.followup.send(embed=embed, ephemeral=False)
             return
 
-        elif users:
+        else:
             user_ids = [int(uid) for uid in re.findall(r"<@!?(\d+)>", users)]
             if not user_ids:
                 await interaction.followup.send("Please mention at least one user or use `/progress *` (admins only).", ephemeral=True)
@@ -56,12 +65,6 @@ class ProgressCog(commands.Cog):
             embeds = await self.get_reading_progress(user_ids)
             for embed in embeds:
                 await interaction.followup.send(embed=embed, ephemeral=False)
-            return
-
-        else:
-            embeds = await self.get_reading_progress([interaction.user.id])
-            for embed in embeds:
-                await interaction.followup.send(embed=embed, ephemeral=True)
             return
 
     async def get_reading_progress(self, user_ids: list[int]) -> list[discord.Embed]:

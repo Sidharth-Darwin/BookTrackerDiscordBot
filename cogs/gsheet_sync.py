@@ -52,7 +52,7 @@ class GoogleSyncCog(commands.Cog):
     @manual_sync.error
     async def manual_sync_error(self, interaction: Interaction, error):
         if isinstance(error, app_commands.errors.MissingPermissions):
-            await interaction.response.send_message("⛔ Only admins can use this command.", ephemeral=True)
+            await interaction.response.send_message("❌ Only administrators can use this command.", ephemeral=True)
         else:
             await interaction.response.send_message(f"❌ Unexpected error: {error}", ephemeral=True)
 

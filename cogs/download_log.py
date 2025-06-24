@@ -1,7 +1,7 @@
 import discord
 from discord import app_commands, Interaction
 from discord.ext import commands
-from config import EXCEL_FILE, GUILD_ID, LOG_CHANNEL_ID  # <- You must define this in config
+from config import EXCEL_FILE, GUILD_ID, LOG_CHANNEL_ID
 
 import os
 
@@ -14,8 +14,15 @@ class AdminDownloadCog(commands.Cog):
         description="📁 Download a copy of the reading log (Admin only)"
     )
     @app_commands.guilds(discord.Object(id=GUILD_ID))
-    @app_commands.checks.has_permissions(administrator=True)
     async def download_log(self, interaction: Interaction):
+        # Check admin permissions first
+        if not interaction.user.guild_permissions.administrator:
+            await interaction.response.send_message(
+                "❌ Only administrators can use this command.",
+                ephemeral=True
+            )
+            return
+
         # Check if command is being used in the right channel
         if not interaction.channel or str(interaction.channel.id) != str(LOG_CHANNEL_ID):
             await interaction.response.send_message(
@@ -37,6 +44,7 @@ class AdminDownloadCog(commands.Cog):
             file=discord.File(EXCEL_FILE),
             ephemeral=False
         )
+
 
 
 async def setup(bot):

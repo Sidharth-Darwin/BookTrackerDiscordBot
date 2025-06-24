@@ -7,7 +7,8 @@ from config import TOKEN, GUILD_ID, INTENTS, DEBUG, LOG_CHANNEL_ID
 bot = commands.Bot(command_prefix="!", intents=INTENTS)
 tree = bot.tree
 
-log_channel = None  # Will hold the log channel object``
+log_channel = None  # Will hold the log channel object
+startup_logs = []  # Initialize here globally
 
 async def send_to_log_channel(messages: list[str]):
     global log_channel
@@ -43,25 +44,22 @@ async def load_cogs() -> list[str]:
 
 @bot.event
 async def on_ready():
-    # Clear global commands (prevents legacy commands from sticking around)
-    tree.clear_commands(guild=None)
-
-    # Optionally: clear commands for this guild only if you're resetting all
-    # await tree.clear_commands(guild=discord.Object(id=GUILD_ID))
-
-    # Re-sync only the current guild's commands
-    await tree.sync(guild=discord.Object(id=GUILD_ID))
-
-    synced_cmds = len(tree.get_commands(guild=discord.Object(id=GUILD_ID)))
-    sync_msg = (
-        f"✅ Cleared global commands.\n"
-        f"✅ Synced {synced_cmds} command(s) for guild `{GUILD_ID}`.\n"
-        f"✅ Logged in as {bot.user}."
-    )
-    startup_logs.append(sync_msg)
-
-    await send_to_log_channel(startup_logs)
-
+    try:
+        guild = discord.Object(id=GUILD_ID)
+        
+        # Sync commands
+        synced = await tree.sync(guild=guild)
+        
+        sync_msg = f"✅ Synced {len(synced)} command(s) for guild `{GUILD_ID}`. Logged in as {bot.user}."
+        startup_logs.append(sync_msg)
+        await send_to_log_channel(startup_logs)
+        
+    except Exception as e:
+        error_msg = f"❌ Error in on_ready: {e}"
+        print(error_msg)
+        if DEBUG:
+            import traceback
+            traceback.print_exc()
 
 async def main():
     global startup_logs
