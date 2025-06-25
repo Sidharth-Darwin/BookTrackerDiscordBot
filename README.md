@@ -33,7 +33,7 @@
 
 ---
 
-## 🛠️ Commands Overview
+## 🛠️ Main Commands Overview
 
 | Command                | Description                                      | Access    |
 |------------------------|--------------------------------------------------|-----------|
@@ -49,6 +49,8 @@
 | `/progress *`        | Displays last `DATE_CUTOFF_DAYS` days of everyone's progress| Admin |
 | `/download_log`        | Download your reading data as Excel             | Admins    |
 | `/gsheet_sync`   | Sync Excel to Google Sheet (manual trigger)     | Admins    |
+
+There are also cogs available in `test_cogs/` which will work if `DEBUG=True` in `.env` file.
 
 ---
 

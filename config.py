@@ -18,7 +18,7 @@ EXCEL_FILE: str = "data/reading_data.xlsx"
 GENRE_FILE: str = "data/genres.csv"
 MAX_FIELDS: int = 25  # Max fields per embed in progress command
 DATE_CUTOFF_DAYS: int = 45  # 45 days in progress command
-STATUS_MAP = {0: "Shelved", 1: "Reading", 2: "Finished"}
+STATUS_MAP: dict[int, str] = {0: "Shelved", 1: "Reading", 2: "Finished"}
 
 # ---------------- Bot Setup ----------------
 INTENTS = discord.Intents.default()

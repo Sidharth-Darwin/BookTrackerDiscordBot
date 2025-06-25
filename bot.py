@@ -40,6 +40,18 @@ async def load_cogs() -> list[str]:
                 if DEBUG:
                     import traceback
                     traceback.print_exc()
+    if DEBUG:
+        for cog in os.listdir("test_cogs"):
+            if cog.endswith(".py") and not cog.startswith("__"):
+                cog_name = cog[:-3]
+                try:
+                    await bot.load_extension(f"test_cogs.{cog_name}")
+                    logs.append(f"✅ Loaded test cog `{cog_name}` successfully.")
+                except Exception as e:
+                    error_msg = f"❌ Failed to load test cog `{cog_name}`. Error: {e}"
+                    logs.append(error_msg)
+                    import traceback
+                    traceback.print_exc()
     return logs
 
 @bot.event
