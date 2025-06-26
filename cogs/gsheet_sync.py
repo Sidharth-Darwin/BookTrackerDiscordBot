@@ -6,7 +6,6 @@ from datetime import datetime
 from config import GUILD_ID, LOG_CHANNEL_ID, DEBUG
 from utils.google_sync import sync_excel_to_google_sheet
 
-
 class GoogleSyncCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -23,19 +22,21 @@ class GoogleSyncCog(commands.Cog):
                 if DEBUG:
                     print("📤 Auto-sync to Google Sheet starting...")
 
-                await sync_excel_to_google_sheet()
+                success, warning = await sync_excel_to_google_sheet()
 
                 if DEBUG:
-                    print("✅ Auto-sync completed successfully.")
+                    if success:
+                        print("✅ Auto-sync completed successfully.")
+                    if warning:
+                        print(warning)
             except Exception as e:
                 if DEBUG:
                     print(f"❌ Auto-sync failed: {e}")
 
-    @app_commands.command(name="gsheet_sync", description="Sync Excel data to Google Sheet")
+    @app_commands.command(name="gsheet_sync", description="Sync Excel data and genres to Google Sheet & CSV")
     @app_commands.guilds(discord.Object(id=GUILD_ID))
     @app_commands.checks.has_permissions(administrator=True)
     async def manual_sync(self, interaction: Interaction):
-        # Restrict command to admin channel
         if interaction.channel_id != LOG_CHANNEL_ID:
             await interaction.response.send_message("⛔ This command can only be used in the admin channel.", ephemeral=True)
             return
@@ -43,9 +44,18 @@ class GoogleSyncCog(commands.Cog):
         try:
             await interaction.response.defer(ephemeral=True)
 
-            await sync_excel_to_google_sheet()
+            success, warning = await sync_excel_to_google_sheet()
 
-            await interaction.followup.send("✅ Synced to Google Sheet successfully.", ephemeral=True)
+            if success:
+                msg = "✅ Excel synced to Google Sheet."
+                if warning:
+                    msg += f"\n{warning}"
+                else:
+                    msg += "\n✅ Genres synced to local CSV."
+                await interaction.followup.send(msg, ephemeral=True)
+            else:
+                await interaction.followup.send("❌ Sync failed.", ephemeral=True)
+
         except Exception as e:
             await interaction.followup.send(f"❌ Sync failed: {e}", ephemeral=True)
 
@@ -55,7 +65,6 @@ class GoogleSyncCog(commands.Cog):
             await interaction.response.send_message("❌ Only administrators can use this command.", ephemeral=True)
         else:
             await interaction.response.send_message(f"❌ Unexpected error: {error}", ephemeral=True)
-
 
 async def setup(bot):
     await bot.add_cog(GoogleSyncCog(bot))
