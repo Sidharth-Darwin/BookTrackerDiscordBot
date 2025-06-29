@@ -7,6 +7,18 @@ from views.shelf_book_view import ShelfBookSelectView
 
 
 class ShelfBookCog(commands.Cog):
+    """
+    Cog for handling the 'shelf_book' command in a Discord bot.
+    
+    This cog provides functionality for users to temporarily shelf a book they are currently reading.
+    It interacts with the user via a slash command, presenting a selection of books marked as 'Currently Reading'.
+    If the user has no such books, an appropriate message is sent. Handles errors gracefully and provides feedback.
+    Attributes:
+        bot (commands.Bot): The Discord bot instance.
+    Methods:
+        shelf_book(interaction: Interaction):
+            Slash command handler that allows a user to select and shelf a book from their 'Currently Reading' list.
+    """
     def __init__(self, bot):
         self.bot = bot
 

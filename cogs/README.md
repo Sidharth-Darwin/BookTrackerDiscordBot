@@ -1,1 +1,1 @@
-# All your command groups
+# All command groups are in this folder

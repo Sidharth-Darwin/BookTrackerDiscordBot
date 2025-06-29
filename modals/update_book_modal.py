@@ -7,6 +7,26 @@ from utils.genres import GENRE_LIST
 
 
 class UpdateBookModal(ui.Modal, title="✏️ Update book progress."):
+    """
+    UpdateBookModal is a Discord UI modal for updating the progress of a book in a user's reading log.
+    Args:
+        book (dict): A dictionary containing the book's current details, including "BookName", "Author", "Genres", "LastPage", and "TotalPages".
+    Attributes:
+        selected_book (str): The name of the book being updated.
+        bookname (ui.TextInput): Input field for the book's name.
+        author (ui.TextInput): Input field for the book's author(s).
+        genres (ui.TextInput): Input field for the book's genres (comma-separated).
+        lastpage (ui.TextInput): Input field for the last page read.
+        totalpages (ui.TextInput): Input field for the total number of pages.
+    Methods:
+        on_submit(interaction: Interaction):
+            Handles the submission of the modal. Validates user input, checks for valid genres, ensures page numbers are logical, updates the book entry in the Excel file, and sends a confirmation message to the user. If the book is finished, updates the status accordingly and sends a congratulatory message.
+    Raises:
+        ValueError: If the last page or total pages are not valid integers.
+        ValidationError: If genres are invalid or page numbers are illogical.
+    Usage:
+        Instantiate with a book dictionary and present to the user for updating their reading progress.
+    """
     def __init__(self, book):
         super().__init__()
         self.selected_book = book["BookName"]

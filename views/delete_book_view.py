@@ -4,6 +4,24 @@ from config import EXCEL_FILE
 from utils.excel import read_excel_async, write_excel_async
 
 class DeleteBookSelectView(ui.View):
+    """
+    A Discord UI View that allows users to select and delete a book from their reading log.
+
+    This view presents a dropdown (Select) menu populated with the user's books. Upon selection,
+    the chosen book is deleted from the user's reading log stored in an Excel file. The deletion
+    process is irreversible and provides user feedback upon completion.
+
+    Args:
+        user_books (list[str]): A list of book titles associated with the user.
+
+    Attributes:
+        select (ui.Select): The dropdown menu for selecting a book to delete.
+
+    Methods:
+        on_select(interaction: Interaction):
+            Handles the selection event, deletes the selected book from the Excel file,
+            and sends a confirmation message to the user.
+    """
     def __init__(self, user_books: list[str]):
         super().__init__(timeout=60)
         self.select = ui.Select(

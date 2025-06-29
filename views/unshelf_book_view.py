@@ -6,6 +6,24 @@ from config import EXCEL_FILE, DEBUG
 
 
 class UnShelfBookSelectView(discord.ui.View):
+    """
+    UnShelfBookSelectView is a Discord UI View that presents a dropdown menu for users to select a book to "un-shelf" (resume reading) from their personal reading log.
+
+    Args:
+        user_books (list[str]): A list of book titles associated with the user.
+
+    Attributes:
+        select (discord.ui.Select): Dropdown menu populated with up to 25 unique book titles.
+
+    Methods:
+        on_select(interaction: Interaction):
+            Handles the user's selection from the dropdown. If a valid book is selected, updates the reading log in the Excel file to mark the book as resumed (Status=1) and updates the last modified timestamp. Provides feedback to the user via Discord messages.
+
+    Notes:
+        - Only up to 25 unique book titles are shown due to Discord UI limitations.
+        - Requires asynchronous Excel read/write helpers (`read_excel_async`, `write_excel_async`) and a defined `EXCEL_FILE` path.
+        - Uses a DEBUG flag for optional error and status logging.
+    """
     def __init__(self, user_books: list[str]):
         super().__init__(timeout=60)
         user_books = list(set(user_books))[:25] 

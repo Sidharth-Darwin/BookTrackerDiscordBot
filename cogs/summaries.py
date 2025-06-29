@@ -8,6 +8,26 @@ from utils.excel import read_excel_async
 from utils.summaries_utils import get_week_bounds, get_user_mentions, get_all_reader_ids
 
 class SummaryCog(commands.Cog):
+    """
+    SummaryCog is a Discord Cog that provides automated daily and weekly summaries and reminders
+    for a reading log bot. It schedules three background tasks:
+    1. daily_summary_loop:
+        - Runs every 24 hours.
+        - At 23:59 each day, posts a summary in the configured channel listing users who updated their reading logs that day.
+        - If no updates are found, notifies that no one has updated.
+    2. weekly_summary_loop:
+        - Runs every 24 hours.
+        - At 23:59 every Sunday, posts a summary in the configured channel mentioning users who updated their reading logs during the week.
+        - If no updates are found, notifies that no one has updated for the week.
+    3. weekly_reminder_loop:
+        - Runs every 24 hours.
+        - At 18:00 every Sunday, sends a reminder in the configured channel mentioning users who have not updated their reading logs during the week.
+    The cog relies on:
+    - Asynchronous reading of an Excel file containing reading log data.
+    - Helper functions for date calculations, user mentions, and retrieving reader IDs.
+    - Environment variables or constants for channel and guild IDs, and a debug flag.
+    All tasks handle exceptions gracefully and print debug information if enabled.
+    """
     def __init__(self, bot):
         self.bot = bot
         self.daily_summary_loop.start()

@@ -5,6 +5,22 @@ from config import GOOGLE_SHEETS_CRED_PATH, GOOGLE_SHEET_NAME, GOOGLE_SHEET_WORK
 from utils.excel import read_excel_async
 
 async def sync_excel_to_google_sheet():
+    """
+    Syncs the main Excel sheet to a Google Sheet and updates the local genre CSV file
+    from the "Genres" worksheet in the Google Sheet.
+
+    Steps:
+    1. Connects to Google Sheets using service account credentials.
+    2. Opens the target Google Sheet and worksheet.
+    3. Reads the Excel file asynchronously and uploads its data to the worksheet.
+    4. Fetches the "Genres" worksheet, validates its format, and writes its contents
+       to a local CSV file specified by GENRE_FILE.
+
+    Returns:
+        tuple: (success: bool, error_message: Optional[str])
+            success: True if main sync succeeded (even if genre sync failed).
+            error_message: None if all succeeded, or a warning message if genre sync failed.
+    """
     gc = gspread.service_account(filename=GOOGLE_SHEETS_CRED_PATH)
     if not GOOGLE_SHEET_NAME:
         raise ValueError("GOOGLE_SHEET_NAME must not be None")

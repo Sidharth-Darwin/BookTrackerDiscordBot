@@ -5,6 +5,24 @@ from config import GUILD_ID, DATE_CUTOFF_DAYS
 
 
 class HelpCog(commands.Cog):
+    """
+    HelpCog provides a set of commands to assist users in navigating and utilizing the BookTrackerBot.
+
+    This cog includes:
+    - A slash command `/help` that displays an embedded help message listing all available commands, grouped by category (General, Progress Reports, Admin).
+    - Descriptions for each command, including usage notes and admin-only restrictions.
+    - Dynamic inclusion of configurable values such as `DATE_CUTOFF_DAYS` for progress reports.
+    - The help message is visible only to the user who invoked the command.
+
+    Args:
+        bot (commands.Bot): The Discord bot instance to which this cog is attached.
+
+    Attributes:
+        bot (commands.Bot): Reference to the bot instance.
+
+    Commands:
+        /help: Sends an embedded help message with categorized command listings and descriptions.
+    """
     def __init__(self, bot):
         self.bot = bot
 
@@ -17,7 +35,6 @@ class HelpCog(commands.Cog):
             color=discord.Color.blurple()
         )
 
-        # 📘 General User Commands
         embed.add_field(
             name="📘 General Commands",
             value=(
@@ -32,7 +49,6 @@ class HelpCog(commands.Cog):
             inline=False
         )
 
-        # 📊 Progress Commands
         embed.add_field(
             name="📊 Progress Reports",
             value=(
@@ -43,11 +59,11 @@ class HelpCog(commands.Cog):
             inline=False
         )
 
-        # 🛠️ Admin Commands
         embed.add_field(
-            name="🛠️ Admin Commands",
+            name="🗂️ Log Commands",
             value=(
-                "`/download_log` — Download full reading data as an Excel file.\n"
+                "`/download_log [user]` — Download your own reading log as an Excel file. Admins can specify a user to download their log.\n"
+                "`/download_log_all` — Download the full reading log (Admins only, restricted to log channel).\n"
                 "`/gsheet_sync` — Manually sync Excel to Google Sheet."
             ),
             inline=False

@@ -9,45 +9,73 @@ from utils.genres import GENRE_LIST
 from config import EXCEL_FILE, GUILD_ID
 
 
-class AddBookModal(ui.Modal, title="📚 Add a new book"):
-    bookname = ui.TextInput(
-        label="Book Name",
-        placeholder="e.g. Good Omens",
-        required=True,
-        max_length=150,
-        row=0
-    )
-    author = ui.TextInput(
-        label="Author(s) (Comma-separated)",
-        placeholder="e.g. Neil Gaiman, Terry Pratchett",
-        required=True,
-        max_length=100,
-        row=1
-    )
-    genres = ui.TextInput(
-        label="Genres (comma-separated)",
-        placeholder=", ".join(GENRE_LIST[:5]) + ", ...",
-        required=True,
-        max_length=200,
-        row=2
-    )
-    lastpage = ui.TextInput(
-        label="Last Page Read",
-        placeholder="e.g. 120",
-        default="0",
-        required=True,
-        max_length=10,
-        row=3
-    )
-    totalpages = ui.TextInput(
-        label="Total Pages",
-        placeholder="e.g. 300",
-        required=True,
-        max_length=10,
-        row=4
-    )
+class AddBookModal(ui.Modal):
+    """A Discord UI Modal for adding a new book to the user's reading list.
+
+    This modal collects information about a book, including its name, author(s), genres,
+    last page read, and total pages. It validates the input, checks for duplicate entries,
+    and updates the Excel database accordingly. If the user has reached the maximum number
+    of active books, the they are asked to shelve some books. If invalid data is provided, 
+    appropriate feedback is sent.
+
+    Attributes:
+        bookname (ui.TextInput): The name of the book.
+        author (ui.TextInput): The author(s) of the book, comma-separated.
+        genres (ui.TextInput): The genres of the book, comma-separated.
+        lastpage (ui.TextInput): The last page read by the user.
+        totalpages (ui.TextInput): The total number of pages in the book.
+    """
+
+    def __init__(self):
+        super().__init__(title="📚 Add a new book")
+        self.bookname = ui.TextInput(
+            label="Book Name",
+            placeholder="e.g. Good Omens",
+            required=True,
+            max_length=150,
+            row=0
+        )
+        self.author = ui.TextInput(
+            label="Author(s) (Comma-separated)",
+            placeholder="e.g. Neil Gaiman, Terry Pratchett",
+            required=True,
+            max_length=100,
+            row=1
+        )
+        self.genres = ui.TextInput(
+            label="Genres (comma-separated)",
+            placeholder=", ".join(GENRE_LIST[:5]) + ", ...",
+            required=True,
+            max_length=200,
+            row=2
+        )
+        self.lastpage = ui.TextInput(
+            label="Last Page Read",
+            placeholder="e.g. 120",
+            default="0",
+            required=True,
+            max_length=10,
+            row=3
+        )
+        self.totalpages = ui.TextInput(
+            label="Total Pages",
+            placeholder="e.g. 300",
+            required=True,
+            max_length=10,
+            row=4
+        )
+        self.add_item(self.bookname)
+        self.add_item(self.author)
+        self.add_item(self.genres)
+        self.add_item(self.lastpage)
+        self.add_item(self.totalpages)
 
     async def on_submit(self, interaction: Interaction):
+        """Handles the submission of the modal.
+
+        Validates the input, checks for duplicate books, and writes the new book entry
+        to the Excel file. Sends feedback to the user based on the outcome.
+        """
         await interaction.response.defer(ephemeral=True)
 
         if not interaction.guild or interaction.guild.id != GUILD_ID:
@@ -57,8 +85,8 @@ class AddBookModal(ui.Modal, title="📚 Add a new book"):
         user_books = await filter_booknames_with_user_status(str(interaction.user.id), 1)
         if len(user_books) >= 25:
             await interaction.followup.send(
-            "⚠️ You have reached the limit of 25 active books. Please shelve some books using `/shelf_book` before adding new ones.",
-            ephemeral=True
+                "⚠️ You have reached the limit of 25 active books. Please shelve some books using `/shelf_book` before adding new ones.",
+                ephemeral=True
             )
             return
 

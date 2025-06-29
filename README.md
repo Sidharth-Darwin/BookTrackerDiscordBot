@@ -42,15 +42,15 @@
 | `/shelf_book`          | Mark a book as completed                         | Everyone  |
 | `/unshelf_book`        | Bring a shelved book back to reading            | Everyone  |
 | `/delete_book`         | Delete a book from your log                      | Everyone  |
-| `/genres`         | List out all the available genres                   | Everyone  |
-| `/help`         | Help message that explains all commands                | Everyone  |
-| `/progress`        | Displays last `DATE_CUTOFF_DAYS` days of self progress| Everyone    |
-| `/progress @user1@user2`        | Displays last `DATE_CUTOFF_DAYS` days of tagged people's progress| Everyone |
-| `/progress *`        | Displays last `DATE_CUTOFF_DAYS` days of everyone's progress| Admin |
-| `/download_log`        | Download your reading data as Excel             | Admins    |
-| `/gsheet_sync`   | Sync Excel to Google Sheet (manual trigger)     | Admins    |
-
-There are also cogs available in `test_cogs/` which will work if `DEBUG=True` in `.env` file.
+| `/genres`              | List out all the available genres                   | Everyone  |
+| `/help`                | Help message that explains all commands                | Everyone  |
+| `/progress`            | Displays last `DATE_CUTOFF_DAYS` days of self progress| Everyone    |
+| `/progress @user1@user2`| Displays last `DATE_CUTOFF_DAYS` days of tagged people's progress| Everyone |
+| `/progress *`          | Displays last `DATE_CUTOFF_DAYS` days of everyone's progress| Admin |
+| `/download_log`        | Download your reading data as Excel             | Everyone  |
+| `/download_log @user`  | Download @user's reading data as Excel             | Admins  |
+| `/download_log_all`  | Download everyone's reading data as Excel             | Admins  |
+| `/gsheet_sync`         | Sync Excel to Google Sheet (manual trigger)     | Admins    |
 
 ---
 
@@ -71,6 +71,7 @@ DISCORD_BOT_TOKEN=your-token-here
 ALLOWED_GUILD_ID=your-server-id
 LOG_CHANNEL_ID=preferably-admin-group-where-status-is-shown-text-channel-id
 ALLOWED_TEXT_CHANNEL_ID=allowed-to-put-summary-and-remainders-text-channel-id
+WELCOME_CHANNEL_ID=welcome-channel-id
 EXCEL_FILE=path/to/data.xlsx
 GOOGLE_SHEET_NAME=your-google-sheet-name
 GOOGLE_SHEET_WORKSHEET=Sheet1

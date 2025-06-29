@@ -10,6 +10,42 @@ from config import GUILD_ID, EXCEL_FILE, DATE_CUTOFF_DAYS, MAX_FIELDS, STATUS_MA
 from utils.excel import read_excel_async
 
 class ProgressCog(commands.Cog):
+    """
+    ProgressCog
+    
+    A Discord Cog for tracking and displaying reading progress of users in a server. 
+    Provides a `/progress` slash command to view reading progress for yourself, specific users, or all users (admin only).
+
+    Commands:
+    ---------
+
+    /progress [users]
+        - View reading progress for yourself, mentioned users, or all users (if admin).
+        - If no users are specified, shows the invoker's progress.
+        - If '*' is specified, shows progress for all users (admin only).
+        - If users are mentioned, shows progress for those users.
+
+    Key Methods:
+    ------------
+
+    - progress_command: Handles the `/progress` slash command and delegates to handle_progress.
+    - handle_progress: Processes the command input, checks permissions, parses user mentions, and sends progress embeds.
+    - get_reading_progress: Fetches and formats reading progress data from an Excel file for the specified user IDs, returning a list of Discord embeds.
+
+    Features:
+    ---------
+
+    - Admin-only access for viewing all users' progress.
+    - Handles user mentions and permission checks.
+    - Reads progress data asynchronously from an Excel file.
+    - Formats progress data into Discord embeds, including book details, progress percentage, and last updated time.
+    - Handles errors and missing data gracefully.
+
+    Parameters:
+    -----------
+    
+    - bot: The Discord bot instance.
+    """
     def __init__(self, bot):
         self.bot = bot
 

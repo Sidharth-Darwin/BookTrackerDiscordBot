@@ -9,5 +9,5 @@ dummy_data.py
 .idea
 gsheetsbotsave*.json
 dummy.py
-/test_cogs/*.txt
+/test_cogs/*
 *.ttf

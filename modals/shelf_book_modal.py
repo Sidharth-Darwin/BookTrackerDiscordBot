@@ -2,11 +2,30 @@ import string
 from datetime import datetime
 import discord
 from discord import Interaction
-import pandas as pd
 from config import EXCEL_FILE, DEBUG
 from utils.excel import read_excel_async, write_excel_async
 
 class ShelfBookModal(discord.ui.Modal):
+    """
+    A Discord UI Modal for shelving a book in the user's reading log.
+    This modal prompts the user to provide a reason for shelving a selected book.
+    Upon submission, it validates the input, updates the book's status in an Excel-based reading log,
+    and notifies the user of the successful operation.
+    Args:
+        book_name (str): The name of the book to be shelved.
+    Attributes:
+        selected_book (str): The name of the book being shelved.
+        reason (discord.ui.TextInput): Text input field for the user to provide a shelving reason.
+    Methods:
+        on_submit(interaction: Interaction):
+            Handles the modal submission event. Validates the reason, updates the reading log,
+            and sends feedback to the user. Handles errors gracefully and provides debug output if enabled.
+    Raises:
+        Sends an ephemeral error message to the user if:
+            - No reason is provided.
+            - The book is not found in the user's reading log.
+            - An unexpected exception occurs during processing.
+    """
     def __init__(self, book_name: str):
         super().__init__(title="Shelf Book")
         self.selected_book = book_name

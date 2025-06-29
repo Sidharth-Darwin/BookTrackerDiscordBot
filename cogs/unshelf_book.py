@@ -7,6 +7,19 @@ from views.unshelf_book_view import UnShelfBookSelectView
 
 
 class UnShelfBookCog(commands.Cog):
+    """
+    Cog for handling the 'unshelf_book' command in a Discord bot.
+    This cog provides functionality for users to un-shelve books that are currently marked as 'Shelved'.
+    When the command is invoked, it checks if the user has any books with the 'Shelved' status.
+    If books are found, it presents a selection view for the user to choose which book to un-shelve.
+    If no books are found or an error occurs, an appropriate message is sent to the user.
+    Attributes:
+        bot (commands.Bot): The Discord bot instance.
+    Methods:
+        unshelf_book(interaction: Interaction):
+            Slash command handler for un-shelving a book. Presents a selection view if books are available,
+            otherwise notifies the user. Handles exceptions gracefully.
+    """
     def __init__(self, bot):
         self.bot = bot
 
