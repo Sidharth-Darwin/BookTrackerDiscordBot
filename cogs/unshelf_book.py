@@ -39,7 +39,7 @@ class UnShelfBookCog(commands.Cog):
             
             await interaction.response.send_message(
                 "📚 Select a book you want to un-shelf:", 
-                view=UnShelfBookSelectView(books), 
+                view=UnShelfBookSelectView(books[:25]), 
                 ephemeral=False
             )
 

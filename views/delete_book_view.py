@@ -26,7 +26,7 @@ class DeleteBookSelectView(ui.View):
         super().__init__(timeout=60)
         self.select = ui.Select(
             placeholder="Select a book to delete. This process is irreversible.",
-            options=[discord.SelectOption(label=title.title(), value=title) for title in user_books]
+            options=[discord.SelectOption(label=title.title(), value=title) for title in user_books[:25]]
         )
         self.select.callback = self.on_select
         self.add_item(self.select)
@@ -36,21 +36,27 @@ class DeleteBookSelectView(ui.View):
         df = await read_excel_async(EXCEL_FILE)
         df["UserID"] = df["UserID"].astype(str)
 
-        selected_book = self.select.values[0]
-        match = (
-            (df["UserID"] == str(interaction.user.id)) &
-            (df["BookName"].str.lower() == selected_book.lower())
-        )
-
-        if not match.any():
-            await interaction.followup.send("Book not found.", ephemeral=True)
-            return
+        selected_value = self.select.values[0]
+        is_audiobook = selected_value.startswith("🎧 ")
+        selected_book = selected_value[2:] 
+        if is_audiobook:
+            match = (
+                (df["UserID"] == str(interaction.user.id)) &
+                (df["BookName"].str.lower() == selected_book.lower()) &
+                (df["Genres"].str.contains("audiobook", na=False))
+            )
+        else:
+            match = (
+                (df["UserID"] == str(interaction.user.id)) &
+                (df["BookName"].str.lower() == selected_book.lower()) &
+                (~df["Genres"].str.contains("audiobook", na=False))
+            )
 
         df = df[~match]
         await write_excel_async(df, EXCEL_FILE)
 
         await interaction.followup.send(
-            f"🗑️ Book **{selected_book.title()}** has been deleted from your reading log.\n"
+            f"🗑️ **{selected_book.title()}** has been deleted from your reading log.\n"
             "😢 Sometimes, it's okay to let a book go. On to new adventures!",
             ephemeral=False
         )

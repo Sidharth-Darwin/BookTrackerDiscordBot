@@ -2,7 +2,7 @@ from discord.ext import commands
 from discord import app_commands, Interaction
 import discord
 from config import GUILD_ID, DEBUG
-from utils.genres import GENRE_LIST
+import utils.genres
 
 class GenresCog(commands.Cog):
     """Cog for handling genre-related commands."""
@@ -21,10 +21,8 @@ class GenresCog(commands.Cog):
         """
         await interaction.response.defer(ephemeral=True)
 
-        genres = sorted([genre.title() for genre in GENRE_LIST])
-        if "Documentary" not in genres:
-            genres.append("Documentary")
-            genres.sort()
+        genres = utils.genres.GENRE_LIST
+
         rows = [genres[i:i + 2] for i in range(0, len(genres), 2)]
         table_lines = [" | ".join(f"{g:<20}" for g in row) for row in rows]
 

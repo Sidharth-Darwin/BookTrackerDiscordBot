@@ -26,7 +26,6 @@ class ShelfBookSelectView(discord.ui.View):
     """
     def __init__(self, user_books: list[str]):
         super().__init__(timeout=60)
-        user_books = list(set(user_books))[:25] 
         self.select = discord.ui.Select(
             placeholder="Select a book to shelf",
             options=[discord.SelectOption(label=title.title(), value=title) for title in user_books]

@@ -2,8 +2,8 @@ from discord.ext import commands
 from discord import app_commands, Interaction
 import discord
 
-from views.update_book_view import UpdateBookSelectView
-from utils.excel import read_excel_async
+from views.update_book_view import UpdateBookSelectView, UpdateAudioBookSelectView
+from utils.excel import read_excel_async, get_audiobook_excel
 from config import EXCEL_FILE, GUILD_ID
 import pandas as pd
 
@@ -34,7 +34,7 @@ class UpdateBookCog(commands.Cog):
             (df["LastPage"] != df["TotalPages"])
         ].sort_values(
             by="LastUpdated",
-            ascending=False,
+            ascending=True,
             key=lambda x: pd.to_datetime(x, errors='coerce')
         )["BookName"].dropna().tolist()
 
@@ -48,6 +48,41 @@ class UpdateBookCog(commands.Cog):
         await interaction.response.send_message(
             "📘 Select a book to update:",
             view=UpdateBookSelectView(user_books),
+            ephemeral=True
+        )
+
+    @app_commands.command(name="update_audiobook", description="Update your progress for an audiobook")
+    @app_commands.guilds(discord.Object(id=GUILD_ID))
+    async def update_audiobook(self, interaction: Interaction):
+        """
+        Slash command to update the user's progress for an audiobook.
+        Shows a dropdown of active audiobooks for the user to select and update.
+        """
+        try:
+            df = await get_audiobook_excel()
+        except FileNotFoundError:
+            await interaction.response.send_message("📁 No audiobooks logged yet.", ephemeral=True)
+            return
+
+        user_books = df[
+            (df["UserID"] == str(interaction.user.id)) &
+            (df["LastPage"] != df["TotalPages"])
+        ].sort_values(
+            by="LastUpdated",
+            ascending=True,
+            key=lambda x: pd.to_datetime(x, errors='coerce')
+        )["BookName"].dropna().tolist()
+
+        if not user_books:
+            await interaction.response.send_message(
+                "📖 You haven’t added any active audiobooks yet.",
+                ephemeral=True
+            )
+            return
+
+        await interaction.response.send_message(
+            "📘 Select an audiobook to update:",
+            view=UpdateAudioBookSelectView(user_books),
             ephemeral=True
         )
 

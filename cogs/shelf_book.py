@@ -38,8 +38,8 @@ class ShelfBookCog(commands.Cog):
             
             await interaction.response.send_message(
                 "📚 Select a book you want to shelf:", 
-                view=ShelfBookSelectView(books), 
-                ephemeral=False
+                view=ShelfBookSelectView(books[:25]), 
+                ephemeral=True
             )
 
         except Exception as e:

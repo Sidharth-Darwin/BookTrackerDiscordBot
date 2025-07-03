@@ -3,6 +3,7 @@ import gspread
 from gspread_dataframe import set_with_dataframe
 from config import GOOGLE_SHEETS_CRED_PATH, GOOGLE_SHEET_NAME, GOOGLE_SHEET_WORKSHEET, GENRE_FILE
 from utils.excel import read_excel_async
+import utils.genres
 
 async def sync_excel_to_google_sheet():
     """
@@ -47,6 +48,8 @@ async def sync_excel_to_google_sheet():
             writer.writerow(["Genres"])
             for genre in genres:
                 writer.writerow([genre])
+
+        utils.genres.update_genres()
 
         return True, None
     except Exception as e:

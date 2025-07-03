@@ -4,7 +4,7 @@ from config import EXCEL_FILE, DEBUG
 
 excel_lock = asyncio.Lock()
 
-async def read_excel_async(path=EXCEL_FILE, **kwargs):
+async def read_excel_async(path=EXCEL_FILE, **kwargs) -> pd.DataFrame:
     """
     Asynchronously reads an Excel file into a pandas DataFrame.
 
@@ -65,7 +65,7 @@ async def write_excel_async(df, path=EXCEL_FILE, **kwargs):
 
 async def filter_booknames_with_user_status(user_id: str, status: int) -> list[str]:
     """
-    Filters and returns a list of unique book names for a given user and reading status.
+    Filters and returns a list book names for a given user and reading status.
 
     Args:
         user_id (str): The ID of the user whose books are to be filtered.
@@ -75,7 +75,7 @@ async def filter_booknames_with_user_status(user_id: str, status: int) -> list[s
             - 2: Completed
 
     Returns:
-        list[str]: A list of unique book names matching the user and status criteria.
+        list[str]: A list of book names matching the user and status criteria.
                    Returns an empty list if the user_id is invalid, the status is out of range,
                    or if an error occurs during processing.
 
@@ -97,35 +97,25 @@ async def filter_booknames_with_user_status(user_id: str, status: int) -> list[s
         df = await read_excel_async(EXCEL_FILE)
         df["UserID"] = df["UserID"].astype(str)
         filtered = df[(df["UserID"] == user_id) & (df["Status"] == status)]
-        return filtered["BookName"].dropna().unique().tolist()
+        filtered = filtered.sort_values(
+            by="LastUpdated",
+            ascending=True,
+            key=lambda x: pd.to_datetime(x, errors='coerce')
+        )
+        return filtered["BookName"].dropna().tolist()
     except Exception as e:
         if DEBUG:
             print(f"⚠️ Error fetching books for {user_id}: {e}")
         return []
     
-async def filter_booknames_with_user(user_id: str) -> list[str]:
-    """
-    Filters and returns a list of unique book names associated with a given user ID from an Excel file.
 
-    Args:
-        user_id (str): The user ID to filter book names by.
-
-    Returns:
-        list[str]: A list of unique book names associated with the specified user ID. 
-                   Returns an empty list if the user ID is not provided or if an error occurs.
-
-    Raises:
-        Exception: Any exception encountered during the reading or processing of the Excel file is caught and handled internally.
-    """
-    if not user_id:
-        return []
+async def get_audiobook_excel() -> pd.DataFrame:
+    df = await read_excel_async(EXCEL_FILE)
     try:
-        df = await read_excel_async(EXCEL_FILE)
         df["UserID"] = df["UserID"].astype(str)
-        filtered = df[df["UserID"] == user_id]
-        return filtered["BookName"].dropna().unique().tolist()
+        df_ab = df[df["Genres"].str.contains("audiobook", na=False)]
+        return df_ab
     except Exception as e:
         if DEBUG:
-            print(f"⚠️ Error fetching books for {user_id}: {e}")
-        return []
-
+            print("⚠️ Error filtering audiobooks: {e}")
+        return df

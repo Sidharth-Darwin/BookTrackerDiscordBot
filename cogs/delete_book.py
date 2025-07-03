@@ -1,6 +1,7 @@
 from discord.ext import commands
 from discord import app_commands, Interaction
 import discord
+import pandas as pd
 from config import EXCEL_FILE, GUILD_ID
 from views.delete_book_view import DeleteBookSelectView
 from utils.excel import read_excel_async
@@ -27,7 +28,17 @@ class DeleteBookCog(commands.Cog):
             await interaction.response.send_message("No books logged yet.", ephemeral=True)
             return
 
-        user_books = df[df["UserID"] == str(interaction.user.id)]["BookName"].dropna().tolist()
+        filtered_df = df[df["UserID"] == str(interaction.user.id)].sort_values(
+            by="LastUpdated",
+            ascending=False,
+            key=lambda x: pd.to_datetime(x, errors='coerce')
+        )
+        book_prefixes = filtered_df["Genres"].str.contains("audiobook", case=False, na=False)
+        user_books = [
+            ("🎧 " if is_audio else "📚 ") + str(book)
+            for is_audio, book in zip(book_prefixes, filtered_df["BookName"])
+            if pd.notna(book)
+        ]
 
         if not user_books:
             await interaction.response.send_message("You haven't added any books yet.", ephemeral=True)

@@ -13,20 +13,19 @@ class UnShelfBookSelectView(discord.ui.View):
         user_books (list[str]): A list of book titles associated with the user.
 
     Attributes:
-        select (discord.ui.Select): Dropdown menu populated with up to 25 unique book titles.
+        select (discord.ui.Select): Dropdown menu populated with up to 25 book titles.
 
     Methods:
         on_select(interaction: Interaction):
             Handles the user's selection from the dropdown. If a valid book is selected, updates the reading log in the Excel file to mark the book as resumed (Status=1) and updates the last modified timestamp. Provides feedback to the user via Discord messages.
 
     Notes:
-        - Only up to 25 unique book titles are shown due to Discord UI limitations.
+        - Only up to 25 book titles are shown due to Discord UI limitations.
         - Requires asynchronous Excel read/write helpers (`read_excel_async`, `write_excel_async`) and a defined `EXCEL_FILE` path.
         - Uses a DEBUG flag for optional error and status logging.
     """
     def __init__(self, user_books: list[str]):
         super().__init__(timeout=60)
-        user_books = list(set(user_books))[:25] 
         self.select = discord.ui.Select(
             placeholder="Select a book to un-shelf",
             options=[discord.SelectOption(label=title.title(), value=title) for title in user_books]

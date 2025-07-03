@@ -15,7 +15,7 @@ class GoogleSyncCog(commands.Cog):
         self.bot = bot
         self.weekly_google_sync.start()
 
-    @tasks.loop(hours=24)
+    @tasks.loop(hours=1)
     async def weekly_google_sync(self):
         """
         Automatically syncs Excel data to Google Sheets every Sunday at 11:00 AM.
