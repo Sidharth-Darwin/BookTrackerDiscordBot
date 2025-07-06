@@ -96,7 +96,7 @@ class UpdateBookModal(ui.Modal, title="✏️ Update book progress."):
         
         finished_reading: bool = int(self.lastpage.value.strip()) == int(self.totalpages.value.strip())
 
-        print(df)
+         
         if finished_reading:
             df.loc[match, ["BookName", "Author", "Genres", "LastPage", "TotalPages", "LastUpdated", "Status"]] = [
                 self.bookname.value.strip(),
@@ -116,7 +116,7 @@ class UpdateBookModal(ui.Modal, title="✏️ Update book progress."):
                 total_pages,
                 datetime.now()
             ]
-        print(df)
+         
 
         await write_excel_async(df, EXCEL_FILE)
 
@@ -226,7 +226,7 @@ class UpdateAudioBookModal(ui.Modal, title="✏️ Update book progress."):
         
         finished_reading: bool = (last_minute == total_minutes)
 
-        print(df)
+         
         if finished_reading:
             df.loc[match, ["BookName", "Author", "Genres", "LastPage", "TotalPages", "LastUpdated", "Status"]] = [
                 self.bookname.value.strip(),
@@ -246,7 +246,7 @@ class UpdateAudioBookModal(ui.Modal, title="✏️ Update book progress."):
                 total_minutes,
                 datetime.now()
             ]
-        print(df)
+         
 
         await write_excel_async(df, EXCEL_FILE)
 

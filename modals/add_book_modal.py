@@ -161,9 +161,9 @@ class AddBookModal(ui.Modal):
                 ephemeral=True
             )
         else:
-            print(df)
+             
             df = pd.concat([df, pd.DataFrame([new_entry])], ignore_index=True)
-            print(df)
+             
             await write_excel_async(df, EXCEL_FILE)
             await interaction.followup.send(
                 f"🎉 **{interaction.user.mention}** added **{self.bookname.value.title()}** by *{self.author.value.title()}*! Happy reading! 📚",
@@ -336,9 +336,9 @@ class AddAudioBookModal(ui.Modal):
                 ephemeral=True
             )
         else:
-            print(df)
+             
             df = pd.concat([df, pd.DataFrame([new_entry])], ignore_index=True)
-            print(df)
+             
             await write_excel_async(df, EXCEL_FILE)
             await interaction.followup.send(
                 f"🎉 **{interaction.user.mention}** added **{self.bookname.value.title()}** by *{self.author.value.title()}*! Happy reading! 🎧📚",

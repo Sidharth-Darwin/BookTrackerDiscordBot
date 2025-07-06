@@ -50,16 +50,23 @@ async def on_ready():
         # Sync commands
         synced = await tree.sync(guild=guild)
         
+        # Get short list of command names
+        command_names = " | ".join([f"`/{cmd.name}`" for cmd in synced])
         sync_msg = f"✅ Synced {len(synced)} command(s) for guild `{GUILD_ID}`. Logged in as {bot.user}."
-        startup_logs.append(sync_msg)
-        await send_to_log_channel(startup_logs)
+        commands_msg = f"📜 Commands: {command_names}" if synced else "⚠️ No commands found."
         
+        startup_logs.append(sync_msg)
+        startup_logs.append(commands_msg)
+        
+        await send_to_log_channel(startup_logs)
+
     except Exception as e:
         error_msg = f"❌ Error in on_ready: {e}"
         print(error_msg)
         if DEBUG:
             import traceback
             traceback.print_exc()
+
 
 async def main():
     global startup_logs

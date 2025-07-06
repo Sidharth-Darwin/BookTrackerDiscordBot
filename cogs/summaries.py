@@ -11,23 +11,24 @@ class SummaryCog(commands.Cog):
     """
     SummaryCog is a Discord Cog that provides automated daily and weekly summaries and reminders
     for a reading log bot. It schedules three background tasks:
+    
     1. daily_summary_loop:
-        - Runs every 24 hours.
-        - At around 23:50-00:00 each day, posts a summary in the configured channel listing users who updated their reading logs that day.
-        - If no updates are found, notifies that no one has updated.
+        - Runs every 10 minutes.
+        - Posts a summary after 23:50 each day showing who updated logs.
+    
     2. weekly_summary_loop:
-        - Runs every 24 hours.
-        - At around 23:50-00:00 every Sunday, posts a summary in the configured channel mentioning users who updated their reading logs during the week.
-        - If no updates are found, notifies that no one has updated for the week.
+        - Runs every 10 minutes.
+        - Posts a summary after 23:50 every Sunday showing who updated during the week.
+    
     3. weekly_reminder_loop:
-        - Runs every 24 hours.
-        - At around 18:00 every Sunday, sends a reminder in the configured channel mentioning users who have not updated their reading logs during the week.
-    The cog relies on:
-    - Asynchronous reading of an Excel file containing reading log data.
-    - Helper functions for date calculations, user mentions, and retrieving reader IDs.
-    - Environment variables or constants for channel and guild IDs, and a debug flag.
-    All tasks handle exceptions gracefully and print debug information if enabled.
+        - Runs every 10 minutes.
+        - At 18:00–18:09 every Sunday, reminds users who haven't updated.
+    
+    Notes:
+    - Uses system time (bot server's local time).
+    - All loops are idempotent using a last-run tracker.
     """
+
     def __init__(self, bot):
         self.bot = bot
         self.last_daily_run = None
@@ -43,11 +44,14 @@ class SummaryCog(commands.Cog):
         now = datetime.now()
         today = now.date()
 
-        # Runs only once per day after 23:50
+        # Run once daily after 23:50
         if now.hour == 23 and now.minute >= 50:
             if self.last_daily_run == today:
                 return
             self.last_daily_run = today
+
+            if DEBUG:
+                print(f"📅 Running daily summary for {today} at {now.time()}")
 
             if not CHANNEL_ID or not GUILD_ID:
                 if DEBUG:
@@ -78,13 +82,16 @@ class SummaryCog(commands.Cog):
     async def weekly_summary_loop(self):
         await self.bot.wait_until_ready()
         now = datetime.now()
-        week_id = now.isocalendar()[1]  # ISO week number
+        week_id = now.isocalendar()[1]
 
-        # Runs only once on Sunday after 23:50
+        # Run once on Sunday after 23:50
         if now.weekday() == 6 and now.hour == 23 and now.minute >= 50:
             if self.last_weekly_summary_run == week_id:
                 return
             self.last_weekly_summary_run = week_id
+
+            if DEBUG:
+                print(f"📆 Running weekly summary for week {week_id} at {now.time()}")
 
             try:
                 df = await read_excel_async(EXCEL_FILE)
@@ -116,11 +123,14 @@ class SummaryCog(commands.Cog):
         now = datetime.now()
         week_id = now.isocalendar()[1]
 
-        # Runs only once on Sunday at 18:00–18:10
-        if now.weekday() == 6 and now.hour == 18:
+        # Run once on Sunday 18:00–18:09
+        if now.weekday() == 6 and now.hour == 18 and now.minute < 10:
             if self.last_weekly_reminder_run == week_id:
                 return
             self.last_weekly_reminder_run = week_id
+
+            if DEBUG:
+                print(f"⏰ Running weekly reminder for week {week_id} at {now.time()}")
 
             try:
                 df = await read_excel_async(EXCEL_FILE)
