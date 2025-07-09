@@ -2,8 +2,8 @@
 
 **BookTrackerBot** is a powerful and community-friendly Discord bot that helps individuals and groups log their reading progress, share what they’re reading, and stay consistent — all while keeping data safely backed up to Google Sheets!
 
-[![Join our Discord](https://img.shields.io/discord/1382048711802355824?label=Join%20Discord&logo=discord&color=5865F2&style=flat-square)](https://discord.gg/2vuRJcgpK7)
 
+[Join our discord server to use the bot](https://discord.gg/2vuRJcgpK7)
 
 ---
 
