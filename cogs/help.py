@@ -39,7 +39,9 @@ class HelpCog(commands.Cog):
             name="📘 General Commands",
             value=(
                 "`/add_book` — Add a new book to your reading list.\n"
-                "`/update_book` — Update your reading progress.\n"
+                "`/update_book` — Update your book reading progress.\n"
+                "`/add_audiobook` — Add a new audiobook to your reading list.\n"
+                "`/update_audiobook` — Update your audiobook listening progress.\n"
                 "`/shelf_book` — Mark a book as shelved (completed/paused).\n"
                 "`/unshelf_book` — Return a shelved book to reading status.\n"
                 "`/delete_book` — Permanently delete a book from your log.\n"
