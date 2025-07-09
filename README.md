@@ -41,7 +41,9 @@
 | Command                | Description                                      | Access    |
 |------------------------|--------------------------------------------------|-----------|
 | `/add_book`            | Add a new book to your reading list             | Everyone  |
+| `/add_audiobook`       | Add a new audiobook to your reading list             | Everyone  |
 | `/update_book`         | Update progress for a book                       | Everyone  |
+| `/update_audiobook`    | Update progress for an audiobook                       | Everyone  |
 | `/shelf_book`          | Mark a book as completed                         | Everyone  |
 | `/unshelf_book`        | Bring a shelved book back to reading            | Everyone  |
 | `/delete_book`         | Delete a book from your log                      | Everyone  |
