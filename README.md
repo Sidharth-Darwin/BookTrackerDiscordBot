@@ -31,7 +31,7 @@
 - **Genre Whitelisting**: Only approved genres are allowed. Users can request new genres to the admins.
 
 ### 🧠 Smart Integration
-- **Excel & Google Sheets Backend**: All data is stored in an Excel file and automatically synced to Google Sheets.
+- **Excel & Google Sheets Backend**: All data is stored in an Excel file and can be synced to Google Sheets.
 - **Service Account Auth**: Secure integration with Google APIs using a service account – no public link sharing needed.
 
 ---
